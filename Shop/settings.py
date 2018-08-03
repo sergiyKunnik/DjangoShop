@@ -135,3 +135,4 @@ STATICFILES_DIRS = (
 #     'django.contrib.staticfiles.finders.FileSystemFinder',
 #     'django.contrib.staticfiles.finders.AppDirectoriesFinder',
 # )
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'

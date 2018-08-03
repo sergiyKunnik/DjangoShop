@@ -1,6 +1,6 @@
 import json
 from decimal import Decimal
-
+from django.core.mail import send_mail
 from django.contrib.auth.models import User
 from django.db.models import Sum
 from django.shortcuts import render
@@ -140,6 +140,15 @@ def order(request):
         new_order.items.add(*cart.items.all())
         Cart.objects.get(id=int(request.session['cart_id'])).delete()
         del request.session['cart_id']
+        email_list = []
+        for user in User.objects.filter(is_superuser=True):
+            email_list.append(user.email)
+        send_mail(
+            'Нове замовлення',
+            'До вас прийшло нове замовлення. Його деталі зможете перглянути в адмінці',
+            'from@example.com',
+            [email_list],
+        )
         return HttpResponseRedirect('/thank_you')
 
     return render(request, 'order.html', {
