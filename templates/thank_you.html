@@ -1,0 +1,11 @@
+{% extends 'base/base.html' %}
+{% block content %}
+    <br>
+    <br>
+    <h1 class="text-center">Дякую за замовлення</h1>
+    <h2 class="text-center">З вони скоро звяжеться наш менеджер</h2>
+    <h3 class="text-center">Переглянути деталі щодо завмовлення ви можете у <a href="{% url 'account' %}">особистому кабінеті</a></h3>
+    <p class="text-center"><a href="{% url 'home' %}"> <button class="btn btn-success">Головна</button> </a></p>
+    <br>
+    <br>
+{% endblock %}

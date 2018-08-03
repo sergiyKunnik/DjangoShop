@@ -1,0 +1,80 @@
+{% extends 'base/base.html' %}
+{% block content %}
+<br>
+<h3 class="text-center">Корзина</h3>
+<hr>
+<br>
+    {% if cart.items.count > 0 %}
+<table class="table">
+  <thead>
+    <tr>
+      <th scope="col">Товар</th>
+      <th scope="col">Кількість</th>
+      <th scope="col">Ціна</th>
+      <th scope="col"></th>
+    </tr>
+  </thead>
+  <tbody>
+  {% for item in cart.items.all %}
+      <tr>
+          <th scope="row">{{ item.product.title }}</th>
+          <td>
+              <form action="" method="GET">
+                  <input type="number" name="qty" value="{{ item.qty }}" min="1" class="form-control cart-item-qty"  id="{{ item.id }}" style="width: 70px;">
+              </form>
+          </td>
+          <td id="item_total_{{ item.id }}">{{ item.item_total }}</td>
+          <td><a href="{% url 'remove_from_cart' item_id=item.id %}">
+              <button type="button" class="btn btn-outline-danger">Delete</button>
+          </a></td>
+        </tr>
+  {% endfor %}
+  <tr>
+      <td class="text-center"></td>
+      <td class="text-center"><h4 class="text-monospace">Загалом</h4></td>
+      <td class="text-center"><strong id="cart_total">{{ cart.cart_total }}</strong></td>
+      <td class="text-center"></td>
+  </tr>
+  </tbody>
+</table>
+        <div>
+            <a href="{% url 'checkout' %}"><button type="button" class="btn btn-outline-info">Оформити замовлення</button></a>
+
+        </div><br>
+        <br>
+    {% else %}
+        <h3 class="text-monospace text-center">Корзина пуста</h3>
+        <h4 class="text-monospace text-center"><a href="{% url 'home' %}"><span class="badge badge-light">Перейти до покупок</span></a></h4>
+    {% endif %}
+    <script>
+
+        $(document).ready(function () {
+            function send_data(event){
+                let data = {
+                    'qty': Number(event.target.value),
+                    'item_id': Number(event.target.id)
+                };
+                var xmlhttp = new XMLHttpRequest();
+                xmlhttp.onreadystatechange = function() {
+                  if (this.readyState == 4 && this.status == 200) {
+                    let data = (JSON.parse(this.responseText));
+                    $('#item_total_'+ Number(event.target.id)).html(data.item_total);
+                    $('#cart_total').html(data.cart_total);
+                  }
+                };
+                xmlhttp.open('POST', '{% url 'edit_cart_item' %}', true);
+                xmlhttp.send(JSON.stringify(data));
+            }
+            $('.cart-item-qty')
+                .on('click', (event) => {
+                    send_data(event);
+                })
+                .keypress((event) => {
+                    send_data(event);
+                })
+                .keyup((event) => {
+                    send_data(event);
+                });
+        })
+    </script>
+{% endblock %}

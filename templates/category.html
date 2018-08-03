@@ -1,0 +1,31 @@
+{% extends 'base/base.html' %}
+{% block content %}
+
+<div class="col-sm-12">
+    <br>
+    <h2>{{ category.name }}</h2>
+    <hr>
+    <div class="row">
+    {% for product in products %}
+        <div class="col-sm-4">
+            <p class="text-center">
+                <img src="{{ product.image.url }}" style="width: 80%; height: 250px;" alt="">
+            </p>
+            <h4 class="text-center">
+              <strong>
+                <a href="{% url 'product_detail' product_id=product.id %}">{{ product.title }}</a>
+              </strong>
+            </h4>
+            <p class="text-center"><strong>Ціна: {{ product.price }}</strong></p>
+            {% if not product.in_cart %}
+                 {% if request.user.is_authenticated%}
+                     <div class="card-footer">
+                        <a href="{% url 'add_to_cart' id=product.id %}"><button class="btn btn-outline-success">Добавити в корзину</button></a>
+                    </div>
+                 {% endif %}
+              {% endif %}
+        </div>
+    {% endfor %}
+    </div>
+</div>
+{% endblock %}

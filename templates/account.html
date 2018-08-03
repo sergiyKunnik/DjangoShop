@@ -1,0 +1,35 @@
+{% extends 'base/base.html' %}
+{% block content %}
+    <br>
+    <h2 class="text-center"> Особистий кабінет користуваца {{ request.user.username }}</h2>
+    <br>
+    {% if orders|length > 0 %}
+        <h4  class="text-center">Ваші замовлення</h4>
+        <table class="table">
+             <tr style="background: darkgrey">
+            <td class="text-center">Номер замовлення</td>
+            <td class="text-center">Дата</td>
+            <td class="text-center">Статус</td>
+            <td class="text-center">Вартість</td>
+            <td class="text-center"></td>
+          </tr>
+          {% for order in orders %}
+              <tr>
+                <td class="text-center">{{ order.id }}</td>
+                <td class="text-center">{{ order.date }}</td>
+                <td class="text-center">{{ order.status }}</td>
+                <td class="text-center">{{ order.total_price }}</td>
+                <td class="text-center"></td>
+              </tr>
+              <hr>
+              <br>
+          {% endfor %}
+        </table>
+    {% else %}
+        <h3 class="text-monospace text-center">У вас поки немає замовлення!</h3>
+        <h4 class="text-monospace text-center"><a href="{% url 'home' %}"><span class="badge badge-light">Перейти до покупок</span></a></h4>
+
+    {% endif %}
+    <br>
+    <br>
+{% endblock %}
