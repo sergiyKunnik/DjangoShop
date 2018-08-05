@@ -1,5 +1,6 @@
 from django import forms
 from django.contrib.auth.models import User
+from django.contrib.auth import authenticate
 
 
 class OrderForm(forms.Form):
@@ -40,11 +41,9 @@ class LoginForm(forms.Form):
     def clean(self):
         username = self.cleaned_data['username']
         password = self.cleaned_data['password']
-        try:
-            User.objects.get(username=username, password=password)
-            print(User.objects.get(username=username, password=password))
-        except User.DoesNotExist:
-            raise forms.ValidationError('Перевірте правельність даних')
+        user = authenticate(username=username, password=password)
+        if user is None:
+            raise forms.ValidationError('Перевірте правильнісь даних')
 
 
 class RegisterForm(forms.ModelForm):

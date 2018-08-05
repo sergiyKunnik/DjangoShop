@@ -3,11 +3,12 @@ from decimal import Decimal
 from django.core.mail import send_mail
 from django.contrib.auth.models import User
 from django.db.models import Sum
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
 from django.http import HttpResponseRedirect, JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth import logout as user_logout
 from django.contrib.auth import login as user_login
+from django.contrib.auth import authenticate
 from app.models import Category, Product, CartItem, Cart, Order
 from app.forms import OrderForm, RegisterForm, LoginForm
 # Create your views here.
@@ -30,34 +31,28 @@ def get_cart(request):
 def base_view(request):
     cart = get_cart(request)
     return render(request, 'base/base.html', {
-        'cart': cart,
-        'categories': Category.objects.all(),
-        'products': Product.objects.all(cart.items.all())
+        'products': Product.objects.all_filter_in_cart(cart.items.all())
     })
 
 
 def product_detail(request, product_id):
-    product = Product.objects.get(id=product_id)
     cart = get_cart(request)
+    product = get_object_or_404(Product, id=product_id)
     products_in_cart = [item.product for item in cart.items.all()]
     if product in products_in_cart:
         product.in_cart = True
         print(product)
     return render(request, 'product.html', {
-        'cart': cart,
         'product': product,
-        'categories': Category.objects.all(),
     })
 
 
 def products_by_category(request, category_slug):
     cart = get_cart(request)
-    category = Category.objects.get(slug=category_slug)
+    category = get_object_or_404(Category, slug=category_slug)
     products = Product.objects.filter_by_category(cart.items.all(), category)
 
     return render(request, 'category.html', {
-        'cart': cart,
-        'categories': Category.objects.all(),
         'category': category,
         'products': products
     })
@@ -72,8 +67,7 @@ def cart(request):
     cart.save()
 
     return render(request, 'cart.html', {
-        'categories': Category.objects.all(),
-        'cart': cart,
+
     })
 
 
@@ -109,17 +103,15 @@ def edit_cart_item(request):
 
 
 def checkout(request):
-    cart = get_cart(request)
 
     return render(request, 'checkout.html', {
-        'cart': cart
+
     })
 
 
 def order(request):
-    cart = get_cart(request)
     form = OrderForm(request.POST or None)
-
+    cart = get_cart(request)
     if form.is_valid():
         name = form.cleaned_data['name']
         last_name = form.cleaned_data['last_name']
@@ -153,22 +145,27 @@ def order(request):
 
     return render(request, 'order.html', {
         'form': form,
-        'cart': cart
     })
 
 
 def thank_you(request):
-    return render(request, 'thank_you.html', {})
+    return render(request, 'thank_you.html', {
+
+    })
 
 
 def account(request):
+    cart = get_cart(request)
     orders = Order.objects.filter(user=request.user).order_by('-id')
     return render(request, 'account.html', {
-        'orders': orders
+        'orders': orders,
+
     })
 
 
 def register(request):
+    if request.user.is_authenticated:
+        return HttpResponseRedirect('/')
     form = RegisterForm(request.POST or None)
 
     if form.is_valid():
@@ -177,7 +174,7 @@ def register(request):
         email = form.cleaned_data['email']
         first_name = form.cleaned_data['first_name']
         last_name = form.cleaned_data['last_name']
-        User.objects.create(
+        User.objects.create_user(
             username=username,
             password=password,
             email=email,
@@ -193,13 +190,17 @@ def register(request):
 
 
 def login(request):
+    if request.user.is_authenticated:
+        return HttpResponseRedirect('/')
     form = LoginForm(request.POST or None)
     if form.is_valid():
         username = form.cleaned_data['username']
         password = form.cleaned_data['password']
-        user = User.objects.get(username=username, password=password)
-        user_logout(request)
-        user_login(request, user)
+        user = authenticate(request, username=username, password=password)
+        if user is not None:
+            user_login(request, user)
+            user_logout(request)
+            user_login(request, user)
         return HttpResponseRedirect('/')
     return render(request, 'login.html', {
         'form': form,

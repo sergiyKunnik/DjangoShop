@@ -1,4 +1,5 @@
 from django.urls import re_path
+from django.contrib.auth.decorators import login_required
 from . import views
 urlpatterns = [
     re_path(r'^$', views.base_view, name='home'),
@@ -9,7 +10,7 @@ urlpatterns = [
     re_path(r'^thank_you/$', views.thank_you, name='thank_you'),
     re_path(r'^register/$', views.register, name='register'),
     re_path(r'^login/$', views.login, name='login'),
-    re_path(r'^logout/$', views.logout, name='logout'),
+    re_path(r'^logout/$', login_required(views.logout), name='logout'),
     re_path(r'^product/(?P<product_id>[-\d]+)/$', views.product_detail, name='product_detail'),
     re_path(r'^add_to_cart/(?P<id>[-\d]+)/$', views.add_to_cart, name='add_to_cart'),
     re_path(r'^remove_from_cart/(?P<item_id>[-\d]+)/$', views.remove_from_cart, name='remove_from_cart'),

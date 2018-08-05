@@ -28,22 +28,22 @@ pre_save.connect(pre_save_category_slug, sender=Category)
 
 
 class ProductManager(models.Manager):
-    def all(self, cart_items, *args, **kwargs):
-        list = super(ProductManager, self).get_queryset().filter(available=True)
+    def all_filter_in_cart(self, cart_items, *args, **kwargs):
+        data_list = super(ProductManager, self).get_queryset().filter(available=True)
         products_in_cart = [item.product for item in cart_items]
-        for product in list:
+        for product in data_list:
             if product in products_in_cart:
                 product.in_cart = True
-        return list
+        return data_list
 
     def filter_by_category(self, cart_items, category,  *args, **kwargs):
-        list = super(ProductManager, self).get_queryset().filter(available=True, category=category)
+        data_list = super(ProductManager, self).get_queryset().filter(available=True, category=category)
 
         products_in_cart = [item.product for item in cart_items]
-        for product in list:
+        for product in data_list:
             if product in products_in_cart:
                 product.in_cart = True
-        return list
+        return data_list
 
 
 class Product(models.Model):
@@ -83,11 +83,11 @@ class Cart(models.Model):
 
     def add_to_cart(self, product_id):
         product = Product.objects.get(id=product_id)
-        new_item = CartItem.objects.get_or_create(product=product, item_total=product.price)
-        new_item[0].save()
+        new_item = CartItem.objects.create(product=product, item_total=product.price)
+        new_item.save()
 
-        if new_item[0] not in self.items.all():
-            self.items.add(new_item[0])
+        if new_item not in self.items.all():
+            self.items.add(new_item)
             self.save()
         return True
 
