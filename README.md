@@ -9,6 +9,6 @@
 8 pip install django-crispy-forms</br>
 9 pip install transliterate</br>
 10 pip install Pillow</br>
-11 python manage.py createseruser</br>
+11 python manage.py createsuperuser</br>
 12 python manage.py runserver</br>
 13 and go to http://127.0.0.1:8000/</br>
