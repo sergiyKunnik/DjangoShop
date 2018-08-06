@@ -84,7 +84,6 @@ class Cart(models.Model):
     def add_to_cart(self, product_id):
         product = Product.objects.get(id=product_id)
         new_item = CartItem.objects.create(product=product, item_total=product.price)
-        new_item.save()
 
         if new_item not in self.items.all():
             self.items.add(new_item)

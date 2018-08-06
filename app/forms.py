@@ -29,7 +29,6 @@ class OrderForm(forms.Form):
 
 
 class LoginForm(forms.Form):
-
     username = forms.CharField(
         label='Логін'
     )
@@ -44,6 +43,7 @@ class LoginForm(forms.Form):
         user = authenticate(username=username, password=password)
         if user is None:
             raise forms.ValidationError('Перевірте правильнісь даних')
+
 
 
 class RegisterForm(forms.ModelForm):
@@ -78,7 +78,6 @@ class RegisterForm(forms.ModelForm):
         if password != password2:
             raise forms.ValidationError('Паролі не співпадають')
 
-        user = authenticate(username=username, password=password)
-        if user is not None:
+        if User.objects.filter(username=username).exists():
             raise forms.ValidationError('Користувач із таким логіном вже зареєстрований')
 

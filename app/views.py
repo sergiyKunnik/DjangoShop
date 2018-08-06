@@ -41,7 +41,6 @@ def product_detail(request, product_id):
     products_in_cart = [item.product for item in cart.items.all()]
     if product in products_in_cart:
         product.in_cart = True
-        print(product)
     return render(request, 'product.html', {
         'product': product,
     })
@@ -132,6 +131,7 @@ def order(request):
         new_order.items.add(*cart.items.all())
         Cart.objects.get(id=int(request.session['cart_id'])).delete()
         del request.session['cart_id']
+
         email_list = []
         for user in User.objects.filter(is_superuser=True):
             email_list.append(user.email)
@@ -141,6 +141,7 @@ def order(request):
             'from@example.com',
             [email_list],
         )
+
         return HttpResponseRedirect('/thank_you')
 
     return render(request, 'order.html', {
@@ -155,7 +156,6 @@ def thank_you(request):
 
 
 def account(request):
-    cart = get_cart(request)
     orders = Order.objects.filter(user=request.user).order_by('-id')
     return render(request, 'account.html', {
         'orders': orders,
@@ -198,7 +198,6 @@ def login(request):
         password = form.cleaned_data['password']
         user = authenticate(request, username=username, password=password)
         if user is not None:
-            user_login(request, user)
             user_logout(request)
             user_login(request, user)
         return HttpResponseRedirect('/')
