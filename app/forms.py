@@ -74,11 +74,11 @@ class RegisterForm(forms.ModelForm):
         username = self.cleaned_data['username']
         password = self.cleaned_data['password']
         password2 = self.cleaned_data['password2']
-        try:
-            User.objects.get(username=username)
-            raise forms.ValidationError('Користувач із таким логіном вже зареєстрований')
-        except User.DoesNotExist:
-            pass
 
         if password != password2:
             raise forms.ValidationError('Паролі не співпадають')
+
+        user = authenticate(username=username, password=password)
+        if user is not None:
+            raise forms.ValidationError('Користувач із таким логіном вже зареєстрований')
+
