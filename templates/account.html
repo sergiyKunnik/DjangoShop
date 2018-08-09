@@ -1,7 +1,9 @@
 {% extends 'base/base.html' %}
 {% block content %}
+    <style>
+    </style>
     <br>
-    <h2 class="text-center"> Особистий кабінет користуваца {{ request.user.username }}</h2>
+    <h2 class="text-center"> Особистий кабінет користувача {{ request.user.username }}</h2>
     <br>
     {% if orders|length > 0 %}
         <h4  class="text-center">Ваші замовлення</h4>
@@ -25,7 +27,10 @@
         </table>
     {% else %}
         <h3 class="text-monospace text-center">У вас поки немає замовлення!</h3>
-        <h4 class="text-monospace text-center"><a href="{% url 'home' %}"><span class="badge badge-light">Перейти до покупок</span></a></h4>
+        <br>
+        <div class="text-center">
+        <a href="{% url 'home' %}"><button type="button" class="btn btn-outline-secondary">Перейти до покупок</button></a>
+        </div>
 
     {% endif %}
     <br>

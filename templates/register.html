@@ -16,6 +16,9 @@
         <h3>Регистрація нового користувача</h3>
         <form action="" method="post">
         {% csrf_token %}
+            {% load crispy_forms_tags %}
+            {{ form|as_crispy_errors }}
+{#            {{ form|crispy}}#}
             <div class="first_last">
                 {{ form.first_name|as_crispy_field}}
                 {{ form.last_name|as_crispy_field}}
@@ -24,7 +27,7 @@
             {{ form.password|as_crispy_field}}
             {{ form.password2|as_crispy_field}}
             {{ form.email|as_crispy_field}}
-    {#        {{ form| }}#}
+{#            {{ form| }}#}
 
             <input type="submit" class="btn btn-success" value="Зарегиструватися">
         </form>

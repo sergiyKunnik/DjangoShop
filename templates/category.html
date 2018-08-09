@@ -9,7 +9,9 @@
     {% for product in products %}
         <div class="col-sm-4">
             <p class="text-center">
+                <a href="{% url 'product_detail' product_id=product.id %}">
                 <img src="{{ product.image.url }}" style="width: 80%; height: 250px;" alt="">
+                </a>
             </p>
             <h4 class="text-center">
               <strong>

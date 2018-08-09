@@ -2,7 +2,6 @@ from django import forms
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate
 
-
 class OrderForm(forms.Form):
     name = forms.CharField(
         label='Ім\'я'
@@ -10,9 +9,11 @@ class OrderForm(forms.Form):
     last_name = forms.CharField(
         required=False,
         label='Прізвище')
-    phone = forms.CharField(
+    phone = forms.RegexField(
+        regex=r'^\+?1?\d{9,15}$',
         label='Телефон',
         help_text='*По цьому номері з вами звяжеться наш менеджер',
+
     )
     address = forms.CharField(
         required=False,
@@ -45,19 +46,29 @@ class LoginForm(forms.Form):
             raise forms.ValidationError('Перевірте правильнісь даних')
 
 
-
 class RegisterForm(forms.ModelForm):
+    username = forms.CharField(
+        label='Логін',
+        min_length=6,
+    )
+
+    password = forms.CharField(
+        widget=forms.PasswordInput,
+        min_length=6,
+    )
     password2 = forms.CharField(widget=forms.PasswordInput)
-    password = forms.CharField(widget=forms.PasswordInput)
+    email = forms.EmailField(
+    )
 
     class Meta:
         model = User
         fields = [
             'username',
             'password',
-            'email',
             'first_name',
             'last_name',
+            'first_name',
+            'email'
         ]
 
     def __init__(self, *args, **kwargs):
@@ -66,15 +77,14 @@ class RegisterForm(forms.ModelForm):
         self.fields['username'].help_text = ''
         self.fields['password'].label = 'Пароль'
         self.fields['password2'].label = 'Повторіть пароль'
-        self.fields['email'].label = 'email'
-        self.fields['first_name'].label = 'Імя'
+        self.fields['email'].label = 'Email'
+        self.fields['first_name'].label = 'Ім\'я'
         self.fields['last_name'].label = 'Прізвище'
 
     def clean(self):
         username = self.cleaned_data['username']
         password = self.cleaned_data['password']
         password2 = self.cleaned_data['password2']
-
         if password != password2:
             raise forms.ValidationError('Паролі не співпадають')
 
