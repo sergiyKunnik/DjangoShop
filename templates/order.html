@@ -2,11 +2,27 @@
 {% load static %}
 {% load crispy_forms_tags %}
 {% block content %}
+    <style>
+        .first_last{
+            display: flex;
+            justify-content: space-between;
+        }
+        .first_last .form-group{
+            width: 48%;
+        }
+    </style>
     <br>
     <br>
     <form action="" method="post">
     {% csrf_token %}
-        {{ form|crispy}}
+        <div class="first_last">
+            {{ form.name|as_crispy_field}}
+            {{ form.last_name|as_crispy_field}}
+        </div>
+        {{ form.phone|as_crispy_field}}
+        {{ form.address|as_crispy_field}}
+        {{ form.comments|as_crispy_field}}
+
 
         <input type="submit" class="btn btn-success" value="Оформити замовлення">
     </form>

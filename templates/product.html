@@ -9,17 +9,21 @@
         <h3 class="text-center">{{ product.title }}</h3>
         <p>{{ product.description }}</p>
         <p style="font-size: 25px;"><strong>Ціна: {{ product.price }}</strong></p>
-        {% if not product.in_cart %}
-            <div class="card-footer">
-                {% if request.user.is_authenticated%}
+        {% if request.user.is_authenticated%}
+            {% if not product.in_cart %}
+                <div class="card-footer">
                     <a href="{% url 'add_to_cart' id=product.id %}"><button class="btn btn-outline-success">Добавити в корзину</button></a>
-                {% else %}
-                    <p>Добавляти товар можуть тільки зарегистрировані користувачі.</br>
-                        Будь-ласка <a href="{% url 'login' %}">увійдіть</a> або <a href="{% url 'register' %}">зареєструйтеся</a>.
-                    </p>
-                {% endif %}
-            </div>
-          {% endif %}
+                </div>
+              {% else %}
+              <div class="card-footer">
+                    <a href="{% url 'cart' %}"><button class="btn btn-danger">Перейти в корзину</button></a>
+                </div>
+            {% endif %}
+        {% else %}
+            <p>Добавляти товар можуть тільки зарегистрировані користувачі.</br>
+                Будь-ласка <a href="{% url 'login' %}">увійдіть</a> або <a href="{% url 'register' %}">зареєструйтеся</a>.
+            </p>
+        {% endif %}
     </div>
 </div>
 {% endblock %}

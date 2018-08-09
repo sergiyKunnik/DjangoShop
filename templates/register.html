@@ -1,13 +1,29 @@
 {% extends 'base/base.html' %}
 {% load crispy_forms_tags %}
 {% block content %}
+    <style>
+        .first_last{
+            display: flex;
+            justify-content: space-between;
+        }
+    .first_last .form-group{
+        width: 48%;
+    }
+    </style>
     <br>
     <br>
     <div class="col-sm-8" style="margin-right: 40%;">
         <h3>Регистрація нового користувача</h3>
         <form action="" method="post">
         {% csrf_token %}
-            {{ form|crispy}}
+            <div class="first_last">
+                {{ form.first_name|as_crispy_field}}
+                {{ form.last_name|as_crispy_field}}
+            </div>
+            {{ form.username|as_crispy_field}}
+            {{ form.password|as_crispy_field}}
+            {{ form.password2|as_crispy_field}}
+            {{ form.email|as_crispy_field}}
     {#        {{ form| }}#}
 
             <input type="submit" class="btn btn-success" value="Зарегиструватися">

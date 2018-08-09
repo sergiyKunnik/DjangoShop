@@ -68,7 +68,7 @@ class RegisterForm(forms.ModelForm):
         self.fields['password2'].label = 'Повторіть пароль'
         self.fields['email'].label = 'email'
         self.fields['first_name'].label = 'Імя'
-        self.fields['last_name'].label = 'Фамілія'
+        self.fields['last_name'].label = 'Прізвище'
 
     def clean(self):
         username = self.cleaned_data['username']

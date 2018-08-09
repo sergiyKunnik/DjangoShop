@@ -109,10 +109,14 @@
                       <h5>${{ product.price }}</h5>
                       <p class="card-text">{{ product.description|slice:"0:80" }}...</p>
                     </div>
-                  {% if not product.in_cart %}
-                    {% if request.user.is_authenticated%}
+                  {% if request.user.is_authenticated%}
+                    {% if not product.in_cart %}
                         <div class="card-footer">
                             <a href="{% url 'add_to_cart' id=product.id %}"><button class="btn btn-outline-success">Добавити в корзину</button></a>
+                        </div>
+                      {% else %}
+                      <div class="card-footer">
+                            <a href="{% url 'cart' %}"><button class="btn btn-danger">Перейти в корзину</button></a>
                         </div>
                     {% endif %}
                   {% endif %}
