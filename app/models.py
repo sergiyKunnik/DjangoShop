@@ -27,6 +27,13 @@ def pre_save_category_slug(sender, instance, *args, **kwargs):
 pre_save.connect(pre_save_category_slug, sender=Category)
 
 
+class ProductImages(models.Model):
+    image = models.ImageField(upload_to='products/product_images/')
+
+    def __unicode__(self):
+        return str(self.id)
+
+
 class ProductManager(models.Manager):
     def all_filter_in_cart(self, cart_items, *args, **kwargs):
         data_list = super(ProductManager, self).get_queryset().filter(available=True)
@@ -51,6 +58,8 @@ class Product(models.Model):
     title = models.CharField(max_length=200, verbose_name='Заголовок')
     description = models.TextField(verbose_name='Опис')
     image = models.ImageField(upload_to='products/images', verbose_name='Зображення')
+    images = models.ManyToManyField(ProductImages, verbose_name='Інші зображення', blank=True)
+    video = models.FileField(upload_to='products/video', verbose_name='Відео', blank=True)
     price = models.DecimalField(max_digits=9, decimal_places=2, verbose_name='Ціна')
     available = models.BooleanField(default=True, verbose_name='В наявності')
     in_cart = False

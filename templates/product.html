@@ -1,12 +1,46 @@
 {% extends 'base/base.html' %}
 
 {% block content %}
+    <meta property="og:url"                content="http://www.nytimes.com/2015/02/19/arts/international/when-great-minds-dont-think-alike.html" />
 <div class="row" style="padding: 50px;">
+    <style>
+        .product_images_row{
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+        }
+        .product_images{
+            width: 150px;
+            height: 150px;
+            margin: 5px;
+            padding: 5px;
+            filter: grayscale(100%);
+            transition: 0.5s;
+        }
+        .product_images:hover{
+            filter: grayscale(0);
+            transform: scale(1.2);
+        }
+    </style>
     <div class="col-sm-4">
         <img src="{{ product.image.url }}" style="width:80%; height: 250px;" alt="">
+        {% if product.video %}
+                <video width="300" height="240" controls>
+                  <source src="{{ product.video.url }}" type="video/mp4">
+                  <source src="{{ product.video.url }}" type="video/ogg">
+                Your browser does not support the video tag.
+                </video>
+            {% endif %}
     </div>
     <div class="col-sm-8">
         <h3 class="text-center">{{ product.title }}</h3>
+        <div class="product_images_row">
+            {% for image in product_images %}
+                <a href="{{ image.image.url }}" data-lightbox="mygallery">
+                    <img class="product_images" src="{{ image.image.url }}" alt="">
+                </a>
+            {% endfor %}
+        </div>
         <p>{{ product.description }}</p>
         <p style="font-size: 25px;"><strong>Ціна: {{ product.price }}</strong></p>
         {% if request.user.is_authenticated%}
@@ -23,6 +57,7 @@
             <p>Добавляти товар можуть тільки зарегистрировані користувачі.</br>
                 Будь-ласка <a href="{% url 'login' %}">увійдіть</a> або <a href="{% url 'register' %}">зареєструйтеся</a>.
             </p>
+
         {% endif %}
     </div>
 </div>

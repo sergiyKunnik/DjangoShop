@@ -43,6 +43,7 @@ def product_detail(request, product_id):
         product.in_cart = True
     return render(request, 'product.html', {
         'product': product,
+        'product_images': product.images.all(),
     })
 
 
@@ -53,7 +54,7 @@ def products_by_category(request, category_slug):
 
     return render(request, 'category.html', {
         'category': category,
-        'products': products
+        'products': products,
     })
 
 
